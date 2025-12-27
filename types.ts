@@ -1,5 +1,4 @@
 
-// Fix: Import React to resolve 'Cannot find namespace React' error when using React.ReactNode
 import React from 'react';
 
 export type Role = 'Manufacturer' | 'Wholesaler' | 'Retailer';
@@ -19,6 +18,37 @@ export interface InventoryItem {
   stock: number;
   reorderPoint: number;
   status: 'Low' | 'Medium' | 'High';
+  location: string;
+}
+
+export interface Order {
+  id: string;
+  partner: string;
+  items: string;
+  amount: number;
+  status: 'Pending' | 'Approved' | 'Packed' | 'Dispatched' | 'Delivered' | 'Cancelled';
+  type: 'B2B' | 'B2C';
+  date: string;
+  region: string;
+}
+
+export interface Payment {
+  id: string;
+  partner: string;
+  amount: number;
+  due: string;
+  status: 'Paid' | 'Pending' | 'Overdue' | 'Partially Paid';
+  creditLimit: number;
+}
+
+export interface Partner {
+  id: string;
+  name: string;
+  type: Role;
+  rating: number;
+  region: string;
+  badge?: string;
+  reliability: number; // 0-100
 }
 
 export interface Alert {

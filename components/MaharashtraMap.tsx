@@ -5,13 +5,19 @@ import { MAHARASHTRA_DISTRICTS } from '../constants';
 export const MaharashtraMap: React.FC = () => {
   const [hovered, setHovered] = useState<string | null>(null);
 
-  // Simplified visual representation using boxes for demo (D3 paths would be better but this is reliable)
+  const getDistrictColor = (val: number) => {
+    if (val > 80) return '#00f2ff'; // full neon
+    if (val > 60) return '#00bfff'; // deep sky
+    if (val > 40) return '#0077ff'; // primary blue
+    return '#1a1a1a'; // dormant
+  };
+
   return (
-    <div className="relative w-full h-[400px] bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden flex items-center justify-center border border-slate-100 dark:border-slate-800">
+    <div className="relative w-full h-[400px] bg-black rounded-2xl overflow-hidden flex items-center justify-center border border-zinc-900">
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00f2ff" strokeWidth="0.5" />
           </pattern>
           <rect width="100%" height="100%" fill="url(#grid)" />
         </svg>
@@ -26,28 +32,28 @@ export const MaharashtraMap: React.FC = () => {
             className="group cursor-pointer"
           >
             <div 
-              className="relative h-24 rounded-2xl transition-all duration-300 flex flex-col items-center justify-center border-2 border-transparent shadow-sm hover:shadow-xl hover:scale-105"
-              style={{ backgroundColor: `${district.color}20`, borderColor: district.color }}
+              className="relative h-24 rounded-2xl transition-all duration-300 flex flex-col items-center justify-center border border-zinc-800 shadow-sm hover:scale-105"
+              style={{ backgroundColor: `${getDistrictColor(district.value)}10`, borderColor: hovered === district.name ? '#00f2ff' : '#1a1a1a' }}
             >
               <div 
-                className="absolute bottom-0 left-0 h-1.5 bg-blue-500 rounded-b-xl transition-all duration-500"
-                style={{ width: `${district.value}%`, backgroundColor: district.color }}
+                className="absolute bottom-0 left-0 h-1 rounded-b-xl transition-all duration-500 shadow-[0_-2px_8px_rgba(0,242,255,0.4)]"
+                style={{ width: `${district.value}%`, backgroundColor: getDistrictColor(district.value) }}
               ></div>
-              <span className="font-bold text-slate-800 dark:text-white mb-1">{district.name}</span>
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{district.revenue} Rev</span>
+              <span className="font-black text-[10px] uppercase tracking-widest text-zinc-500 mb-1">{district.name}</span>
+              <span className="text-sm font-black text-white">{district.revenue}</span>
             </div>
 
             {hovered === district.name && (
-              <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-800 p-3 rounded-lg shadow-xl border border-slate-100 dark:border-slate-700 z-20 w-48 pointer-events-none animate-in fade-in zoom-in duration-200">
-                <p className="font-bold text-slate-800 dark:text-white">{district.name} Region</p>
+              <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-black/90 backdrop-blur-md p-3 rounded-lg shadow-[0_0_20px_rgba(0,242,255,0.2)] border border-sky-500/30 z-20 w-48 pointer-events-none animate-in fade-in zoom-in duration-200">
+                <p className="font-black text-xs text-white uppercase tracking-tighter">{district.name} NODE</p>
                 <div className="mt-2 space-y-1">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-500">Orders:</span>
-                    <span className="font-mono text-blue-600">{district.orders.toLocaleString()}</span>
+                  <div className="flex justify-between text-[10px]">
+                    <span className="text-zinc-500 uppercase font-black">Supply:</span>
+                    <span className="text-sky-400 font-black">{district.orders.toLocaleString()} U</span>
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-500">Growth:</span>
-                    <span className="font-mono text-emerald-600">+14%</span>
+                  <div className="flex justify-between text-[10px]">
+                    <span className="text-zinc-500 uppercase font-black">Sync Stat:</span>
+                    <span className="text-emerald-500 font-black">STABLE</span>
                   </div>
                 </div>
               </div>
@@ -56,14 +62,12 @@ export const MaharashtraMap: React.FC = () => {
         ))}
       </div>
 
-      <div className="absolute bottom-6 right-6 flex items-center gap-3 bg-white/80 dark:bg-slate-900/80 p-3 rounded-xl border border-slate-100 dark:border-slate-800 backdrop-blur-sm">
-        <span className="text-xs font-medium text-slate-500">Demand Heat:</span>
+      <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-zinc-950/80 p-2 rounded-lg border border-zinc-900">
+        <span className="text-[8px] font-black text-zinc-600 uppercase">Demand Intensity</span>
         <div className="flex gap-1">
-          <div className="w-3 h-3 rounded-full bg-blue-100"></div>
-          <div className="w-3 h-3 rounded-full bg-blue-300"></div>
-          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-          <div className="w-3 h-3 rounded-full bg-blue-700"></div>
-          <div className="w-3 h-3 rounded-full bg-blue-900"></div>
+          {[0.2, 0.4, 0.6, 0.8, 1].map(o => (
+            <div key={o} className="w-2 h-2 rounded-full" style={{ backgroundColor: '#00f2ff', opacity: o }}></div>
+          ))}
         </div>
       </div>
     </div>
