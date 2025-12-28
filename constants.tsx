@@ -25,11 +25,11 @@ export const INITIAL_KPIS: Record<string, KPIData[]> = {
 };
 
 export const MOCK_INVENTORY: InventoryItem[] = [
-  { id: '1', sku: 'AQ-500-CL', name: 'AquaFlow 500ml Classic', stock: 12000, reorderPoint: 5000, status: 'High', location: 'Main Plant A' },
-  { id: '2', sku: 'AQ-1000-CL', name: 'AquaFlow 1L Classic', stock: 2400, reorderPoint: 3000, status: 'Low', location: 'Mumbai Hub' },
-  { id: '3', sku: 'AQ-2000-PR', name: 'AquaFlow 2L Premium', stock: 5500, reorderPoint: 4000, status: 'Medium', location: 'Pune Wholesaler 1' },
-  { id: '4', sku: 'AQ-5000-SP', name: 'AquaFlow 5L Sparkling', stock: 800, reorderPoint: 1000, status: 'Low', location: 'Nagpur Warehouse' },
-  { id: '5', sku: 'AQ-20-JAR', name: 'AquaFlow 20L Jar', stock: 15000, reorderPoint: 8000, status: 'High', location: 'Thane Central' },
+  { id: '1', sku: 'NIKS-500-CL', name: 'NIKS-AQUA 500ml Classic', stock: 12000, reorderPoint: 5000, status: 'High', location: 'Main Plant A' },
+  { id: '2', sku: 'NIKS-1000-CL', name: 'NIKS-AQUA 1L Classic', stock: 2400, reorderPoint: 3000, status: 'Low', location: 'Mumbai Hub' },
+  { id: '3', sku: 'NIKS-2000-PR', name: 'NIKS-AQUA 2L Premium', stock: 5500, reorderPoint: 4000, status: 'Medium', location: 'Pune Wholesaler 1' },
+  { id: '4', sku: 'NIKS-5000-SP', name: 'NIKS-AQUA 5L Sparkling', stock: 800, reorderPoint: 1000, status: 'Low', location: 'Nagpur Warehouse' },
+  { id: '5', sku: 'NIKS-20-JAR', name: 'NIKS-AQUA 20L Jar', stock: 15000, reorderPoint: 8000, status: 'High', location: 'Thane Central' },
 ];
 
 export const MOCK_ORDERS: Order[] = [

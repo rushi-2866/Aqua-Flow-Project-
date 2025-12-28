@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaFlow | Enterprise SCM</title>
+    <title>NIKS-AQUA | Owner Command Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -13,8 +13,16 @@
           extend: {
             colors: {
               neon: '#00f2ff',
-              deep: '#000000',
-              surface: '#0a0a0a',
+              aqua: {
+                50: '#f0fdfe',
+                100: '#ccf8fb',
+                500: '#06b6d4',
+                600: '#0891b2',
+                900: '#164e63',
+              },
+              slate: {
+                950: '#020617',
+              }
             }
           }
         }
@@ -30,33 +38,32 @@
             padding: 0;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            background-color: #000000;
-            color: #ffffff;
         }
-        .neon-border {
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        .neon-border:hover {
-            border-color: rgba(0, 242, 255, 0.6);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
-        }
-        .neon-glow {
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
+        .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
-        ::-webkit-scrollbar-track {
-            background: #000000;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #1a1a1a;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
             border-radius: 10px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #00f2ff;
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+        }
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(30, 41, 59, 0.5);
         }
     </style>
 <script type="importmap">
@@ -75,9 +82,8 @@
 }
 </script>
 </head>
-<body class="bg-black text-white transition-colors duration-500">
+<body class="transition-colors duration-300">
     <div id="root"></div>
-    <!-- Point directly to your local entry file without / prefix if in root, though Vite usually handles both -->
     <script type="module" src="index.tsx"></script>
 </body>
 </html>

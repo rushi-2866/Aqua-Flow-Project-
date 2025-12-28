@@ -2,15 +2,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as ChartTooltip, ResponsiveContainer,
-  BarChart, Bar, Cell, PieChart, Pie
+  BarChart, Bar
 } from 'recharts';
 import { 
   TrendingUp, TrendingDown, Package, ShoppingCart, 
-  RefreshCcw, Clock, Activity, Waves, Zap, ShieldCheck,
-  UserCheck, CreditCard, Truck, Search,
-  MapPin, Navigation, Award, Calendar, AlertTriangle,
-  FileText, Download, Eye, CheckCircle, FileSpreadsheet,
-  Users, Wallet, Map as MapIcon, ChevronRight, Star
+  RefreshCcw, Activity, Waves, ShieldCheck,
+  CreditCard, Truck, Search, MapPin, Navigation,
+  Calendar, FileText, Download, CheckCircle, FileSpreadsheet,
+  Users, ChevronRight, Star, ArrowUpRight, Zap, AlertTriangle,
+  LayoutGrid, PlusSquare, History, UserCheck, HardDrive, Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -35,152 +35,153 @@ const App: React.FC = () => {
   const [role, setRole] = useState<Role>('Manufacturer');
   const [darkMode, setDarkMode] = useState(true);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [liveKpiData, setLiveKpiData] = useState<KPIData[]>([]);
   const [productionTick, setProductionTick] = useState(1204520);
-  
-  useEffect(() => {
-    // Force dark mode as default for the neon aesthetic
-    document.documentElement.classList.add('dark');
-  }, []);
+  const [revenueTick, setRevenueTick] = useState(450000);
 
+  // Initialize Theme
   useEffect(() => {
-    setLiveKpiData(INITIAL_KPIS[role] || []);
-  }, [role]);
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [darkMode]);
 
+  // Live Simulation Tickers
   useEffect(() => {
     const interval = setInterval(() => {
-      setProductionTick(prev => prev + Math.floor(Math.random() * 30));
-    }, 3000);
+      setProductionTick(prev => prev + Math.floor(Math.random() * 5));
+      setRevenueTick(prev => prev + (Math.random() > 0.7 ? Math.random() * 50 : 0));
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
   const StatusBadge = ({ status }: { status: string }) => {
     const styles: Record<string, string> = {
-      'Delivered': 'bg-sky-500/10 text-sky-400 border border-sky-500/30',
-      'High': 'bg-sky-500/10 text-sky-400 border border-sky-500/30',
-      'Medium': 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30',
-      'Low': 'bg-rose-500/10 text-rose-400 border border-rose-500/30',
-      'Paid': 'bg-sky-500/10 text-sky-400 border border-sky-500/30',
-      'Overdue': 'bg-rose-500/10 text-rose-400 border border-rose-500/30',
-      'Pending': 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
-      'Approved': 'bg-blue-500/10 text-blue-400 border border-blue-500/30',
-      'Dispatched': 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30',
-      'Active': 'bg-sky-400/10 text-sky-300 border border-sky-400/30',
-      'Partially Paid': 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30',
+      'Delivered': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30',
+      'High': 'bg-aqua-100 text-aqua-700 dark:bg-aqua-500/10 dark:text-aqua-400 border border-aqua-200 dark:border-aqua-500/30',
+      'Medium': 'bg-cyan-100 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-500/30',
+      'Low': 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30',
+      'Paid': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30',
+      'Overdue': 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30',
+      'Pending': 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30',
+      'Approved': 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30',
+      'Dispatched': 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/30',
     };
     return (
-      <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-sm whitespace-nowrap ${styles[status] || 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
+      <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-lg shadow-sm whitespace-nowrap transition-all ${styles[status] || 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700'}`}>
         {status}
       </span>
     );
   };
 
   const OrdersView = () => (
-    <div className="bg-zinc-950 rounded-[2.5rem] border border-zinc-900 p-6 md:p-8 shadow-2xl">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="bg-white dark:bg-slate-950 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-900 p-8 shadow-2xl transition-all">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
         <div>
-          <h3 className="text-2xl font-black text-white neon-glow">Order Lifecycle</h3>
-          <p className="text-sm text-zinc-500 font-medium">Real-time B2B Fulfillment Tracking</p>
+          <h3 className="text-2xl font-black text-zinc-900 dark:text-white dark:neon-glow uppercase">Order Fulfillment Hub</h3>
+          <p className="text-sm text-zinc-500 font-medium italic">Active B2B Node Lifecycle Tracking</p>
         </div>
         <div className="flex flex-wrap gap-4 w-full md:w-auto">
-          <div className="relative group flex-1 md:flex-initial">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600 w-4 h-4" />
-            <input type="text" placeholder="Track ID..." className="w-full pl-10 pr-4 py-3 bg-black rounded-2xl text-sm border border-zinc-800 focus:border-sky-500 focus:bg-zinc-900 transition-all outline-none text-white" />
-          </div>
-          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-sky-500 rounded-2xl text-sm font-black text-black shadow-lg shadow-sky-500/20 active:scale-95 transition-transform whitespace-nowrap">
-            New Order
+          <button className="flex items-center justify-center gap-2 px-6 py-3 bg-aqua-500 hover:bg-aqua-400 rounded-2xl text-sm font-black text-white shadow-xl shadow-aqua-500/20 active:scale-95 transition-all">
+            + Initiate Sales Order
           </button>
         </div>
       </div>
-      <div className="overflow-x-auto min-w-0">
-        <table className="w-full min-w-[800px]">
-          <thead>
-            <tr className="text-left border-b border-zinc-900">
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Order ID</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Partner</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Items</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Region</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Value</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Flow</th>
+      <div className="overflow-x-auto rounded-3xl border border-zinc-100 dark:border-zinc-900">
+        <table className="w-full min-w-[900px]">
+          <thead className="bg-zinc-50 dark:bg-zinc-900/50">
+            <tr className="text-left">
+              <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-500">System UID</th>
+              <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-500">Partner Entity</th>
+              <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-500">Territory</th>
+              <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-500">Capacity</th>
+              <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-500">Lifecycle</th>
+              <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-zinc-500">Gross Val</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-900">
+          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-900">
             {MOCK_ORDERS.map((order) => (
-              <tr key={order.id} className="group hover:bg-zinc-900/50 transition-colors">
-                <td className="py-5 font-bold text-sm text-zinc-300">#{order.id}</td>
-                <td className="py-5">
+              <tr key={order.id} className="group hover:bg-zinc-50 dark:hover:bg-zinc-900/30 transition-all">
+                <td className="px-6 py-6 font-bold text-sm text-zinc-400 dark:text-zinc-500">#{order.id}</td>
+                <td className="px-6 py-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-black text-xs border border-sky-500/30">
+                    <div className="w-9 h-9 rounded-xl bg-aqua-100 dark:bg-aqua-500/10 text-aqua-600 dark:text-aqua-400 flex items-center justify-center font-black text-xs border border-aqua-200 dark:border-aqua-500/20 shadow-sm">
                       {order.partner[0]}
                     </div>
-                    <span className="text-sm font-black text-zinc-200">{order.partner}</span>
+                    <span className="text-sm font-black text-zinc-800 dark:text-zinc-200">{order.partner}</span>
                   </div>
                 </td>
-                <td className="py-5 text-xs font-bold text-zinc-500 truncate max-w-[150px]">{order.items}</td>
-                <td className="py-5 text-sm font-black text-zinc-400">{order.region}</td>
-                <td className="py-5 text-sm font-black text-white">${order.amount.toLocaleString()}</td>
-                <td className="py-5"><StatusBadge status={order.status} /></td>
+                <td className="px-6 py-6 text-sm font-black text-zinc-500 dark:text-zinc-400">{order.region}</td>
+                <td className="px-6 py-6 text-xs font-bold text-zinc-500 dark:text-zinc-500 italic">{order.items}</td>
+                <td className="px-6 py-6"><StatusBadge status={order.status} /></td>
+                <td className="px-6 py-6 text-sm font-black text-zinc-900 dark:text-white tabular-nums">${order.amount.toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </motion.div>
   );
 
   const InventoryView = () => (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-sky-500 p-8 rounded-[2rem] text-black shadow-xl shadow-sky-500/20">
+        <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-blue-500 to-blue-800 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-blue-500/20 border border-blue-400/20">
           <Activity className="mb-4 opacity-70" />
-          <p className="text-xs font-black uppercase tracking-widest opacity-80">Global Reservoir</p>
-          <h3 className="text-4xl font-black mt-1">842,400 L</h3>
-          <p className="text-xs mt-4 font-bold flex items-center gap-1">OPTIMAL BUFFER REACHED</p>
+          <p className="text-xs font-black uppercase tracking-widest opacity-80">NIKS Global Supply</p>
+          <h3 className="text-4xl font-black mt-2 tabular-nums">842,400 L</h3>
+          <p className="text-xs mt-4 font-bold bg-white/20 py-1.5 px-3 rounded-xl inline-block backdrop-blur-md">SYSTEM OPTIMIZED</p>
+        </motion.div>
+        <div className="bg-white dark:bg-slate-950 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-900 shadow-sm flex flex-col justify-between">
+          <div>
+            <Package className="mb-4 text-aqua-500" />
+            <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Days of Cover (Avg)</p>
+            <h3 className="text-4xl font-black mt-2 text-zinc-900 dark:text-white">14.2</h3>
+          </div>
+          <p className="text-xs mt-4 font-bold text-rose-500 flex items-center gap-1.5"><AlertTriangle size={14} /> 2 critical stock points</p>
         </div>
-        <div className="bg-zinc-950 p-8 rounded-[2rem] border border-zinc-900 shadow-sm">
-          <Package className="mb-4 text-sky-400" />
-          <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Days of Cover</p>
-          <h3 className="text-4xl font-black mt-1 text-white">14.2</h3>
-          <p className="text-xs mt-4 font-bold text-rose-500 flex items-center gap-1"><AlertTriangle size={14} /> Critical hubs detected</p>
-        </div>
-        <div className="bg-zinc-950 p-8 rounded-[2rem] border border-zinc-900 shadow-sm">
-          <RefreshCcw className="mb-4 text-cyan-400" />
-          <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Returns Ratio</p>
-          <h3 className="text-4xl font-black mt-1 text-white">0.42%</h3>
-          <p className="text-xs mt-4 font-bold text-sky-400">EXCELLENCE RATING</p>
+        <div className="bg-white dark:bg-slate-950 p-8 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-900 shadow-sm flex flex-col justify-between">
+          <div>
+            <RefreshCcw className="mb-4 text-emerald-500" />
+            <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Cycle Return Rate</p>
+            <h3 className="text-4xl font-black mt-2 text-zinc-900 dark:text-white">0.42%</h3>
+          </div>
+          <p className="text-xs mt-4 font-bold text-emerald-500 uppercase tracking-widest">Efficiency Goal: Met</p>
         </div>
       </div>
-      <div className="bg-zinc-950 rounded-[2.5rem] border border-zinc-900 p-6 md:p-8 shadow-sm">
-        <h3 className="text-xl font-black text-white mb-6 neon-glow">SKU Level Matrix</h3>
+      
+      <div className="bg-white dark:bg-slate-950 rounded-[3rem] border border-zinc-200 dark:border-zinc-900 p-8">
+        <h3 className="text-xl font-black text-zinc-900 dark:text-white mb-8">SKU Stock Matrix (Real-Time)</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {MOCK_INVENTORY.map((item) => (
-            <div key={item.id} className="p-6 rounded-3xl bg-black border border-zinc-900 transition-all hover:border-sky-500 group">
-              <div className="flex justify-between items-start mb-4">
+            <div key={item.id} className="p-6 rounded-3xl bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 hover:border-aqua-500/50 transition-all group cursor-pointer">
+              <div className="flex justify-between items-start mb-5">
                 <div>
-                  <h4 className="font-black text-white text-lg">{item.name}</h4>
-                  <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest">{item.sku}</p>
+                  <h4 className="font-black text-zinc-900 dark:text-white text-lg leading-tight uppercase tracking-tight">{item.name}</h4>
+                  <p className="text-[10px] font-black text-aqua-600 dark:text-aqua-400 uppercase tracking-widest mt-1">{item.sku}</p>
                 </div>
                 <StatusBadge status={item.status} />
               </div>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div>
-                  <div className="flex justify-between text-[10px] font-black uppercase text-zinc-500 mb-1">
-                    <span>Stock Level</span>
-                    <span className="text-zinc-300">{item.stock.toLocaleString()} L</span>
+                  <div className="flex justify-between text-[10px] font-black uppercase text-zinc-400 mb-2">
+                    <span>Active Reservoir</span>
+                    <span className="text-zinc-800 dark:text-zinc-200">{item.stock.toLocaleString()} L</span>
                   </div>
-                  <div className="w-full h-1.5 bg-zinc-900 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: 0 }}
-                      animate={{ width: `${Math.min((item.stock/item.reorderPoint)*50, 100)}%` }}
-                      className={`h-full ${item.status === 'Low' ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]' : 'bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.5)]'}`} 
+                      animate={{ width: `${Math.min((item.stock/15000)*100, 100)}%` }}
+                      className={`h-full rounded-full transition-all ${item.status === 'Low' ? 'bg-rose-500' : 'bg-aqua-500 shadow-[0_0_10px_rgba(6,182,212,0.3)]'}`} 
                     ></motion.div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <p className="text-[10px] font-bold text-zinc-500 flex items-center gap-2">
-                    <MapPin size={12} /> {item.location}
+                <div className="flex items-center justify-between pt-2">
+                  <p className="text-[10px] font-bold text-zinc-500 flex items-center gap-1.5 uppercase">
+                    <MapPin size={12} className="text-aqua-500" /> {item.location}
                   </p>
-                  <button className="text-[10px] font-black text-sky-400 uppercase hover:underline">Restock</button>
+                  <button className="text-[10px] font-black text-aqua-600 dark:text-aqua-400 uppercase hover:underline">Node Logs</button>
                 </div>
               </div>
             </div>
@@ -190,379 +191,263 @@ const App: React.FC = () => {
     </div>
   );
 
-  const PaymentsView = () => (
-    <div className="bg-zinc-950 rounded-[2.5rem] border border-zinc-900 p-8 shadow-2xl">
-      <div className="flex justify-between items-center mb-10">
-        <div>
-          <h3 className="text-2xl font-black text-white neon-glow">Financial Ledger</h3>
-          <p className="text-sm text-zinc-500 font-medium">B2B Settlements & Credit Tracking</p>
+  const dashboardContent = useMemo(() => {
+    const kpis = INITIAL_KPIS[role] || [];
+    return (
+      <div className="space-y-8">
+        {/* Owner Quick Action Command Center */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+           {[
+             { label: 'Issue Invoice', icon: <PlusSquare size={18}/>, color: 'bg-emerald-500' },
+             { label: 'Fleet Status', icon: <Navigation size={18}/>, color: 'bg-blue-500' },
+             { label: 'Partner Ledger', icon: <History size={18}/>, color: 'bg-amber-500' },
+             { label: 'System Backup', icon: <HardDrive size={18}/>, color: 'bg-zinc-600' }
+           ].map((action, i) => (
+             <motion.button 
+               key={i}
+               whileHover={{ y: -4, scale: 1.02 }}
+               className="flex items-center gap-4 p-5 bg-white dark:bg-slate-900 rounded-[2rem] border border-zinc-200 dark:border-zinc-800 shadow-sm transition-all text-left"
+             >
+               <div className={`w-12 h-12 ${action.color} text-white rounded-2xl flex items-center justify-center shadow-lg shadow-${action.color}/20 flex-shrink-0`}>
+                 {action.icon}
+               </div>
+               <div>
+                  <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest leading-none mb-1">Owner Action</p>
+                  <p className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-tighter">{action.label}</p>
+               </div>
+             </motion.button>
+           ))}
         </div>
-        <div className="flex gap-4">
-          <div className="px-6 py-3 bg-black border border-zinc-900 rounded-2xl">
-            <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Total Receivables</p>
-            <p className="text-xl font-black text-emerald-400">$142,800</p>
-          </div>
-        </div>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left border-b border-zinc-900">
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Invoice</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Partner</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Amount</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Due Date</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Status</th>
-              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-900">
-            {MOCK_PAYMENTS.map((payment) => (
-              <tr key={payment.id} className="group hover:bg-zinc-900/50 transition-colors">
-                <td className="py-5 text-sm font-bold text-zinc-400">#{payment.id}</td>
-                <td className="py-5 font-black text-zinc-200">{payment.partner}</td>
-                <td className="py-5 font-black text-white">${payment.amount.toLocaleString()}</td>
-                <td className="py-5 text-sm text-zinc-500 font-bold">{payment.due}</td>
-                <td className="py-5"><StatusBadge status={payment.status} /></td>
-                <td className="py-5">
-                  <button className="p-2 bg-zinc-900 rounded-lg text-sky-400 hover:bg-sky-500 hover:text-black transition-all">
-                    <Download size={14} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
 
-  const PartnersView = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {MOCK_PARTNERS.map((partner) => (
-        <motion.div 
-          key={partner.id}
-          whileHover={{ y: -5 }}
-          className="bg-zinc-950 p-8 rounded-[2.5rem] border border-zinc-900 shadow-sm relative group overflow-hidden"
-        >
-          <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/5 blur-3xl -mr-10 -mt-10 group-hover:bg-sky-500/10 transition-all"></div>
-          <div className="flex justify-between items-start mb-6">
-            <div className="w-14 h-14 bg-sky-500 rounded-2xl flex items-center justify-center text-black shadow-lg">
-              <Users size={28} />
-            </div>
-            <div className="flex items-center gap-1 bg-black px-3 py-1 rounded-full border border-zinc-900">
-              <Star size={12} className="text-amber-400 fill-amber-400" />
-              <span className="text-xs font-black text-white">{partner.rating}</span>
-            </div>
-          </div>
-          <h3 className="text-xl font-black text-white mb-1">{partner.name}</h3>
-          <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest mb-6">{partner.type} • {partner.region}</p>
-          
-          <div className="space-y-4 mb-8">
-            <div>
-              <div className="flex justify-between text-[10px] font-black uppercase text-zinc-500 mb-1">
-                <span>Reliability</span>
-                <span className="text-zinc-300">{partner.reliability}%</span>
-              </div>
-              <div className="w-full h-1.5 bg-zinc-900 rounded-full">
-                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${partner.reliability}%` }}></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between pt-6 border-t border-zinc-900">
-             {partner.badge && (
-               <span className="text-[9px] font-black uppercase bg-sky-500/10 text-sky-400 px-3 py-1 rounded-full border border-sky-500/20">{partner.badge}</span>
-             )}
-             <button className="text-[10px] font-black uppercase text-zinc-400 hover:text-white flex items-center gap-1 ml-auto">
-               Profile <ChevronRight size={12} />
-             </button>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-
-  const LogisticsView = () => (
-    <div className="space-y-8">
-      <div className="bg-zinc-950 rounded-[2.5rem] border border-zinc-900 p-8 shadow-sm">
-        <div className="flex justify-between items-center mb-10">
-          <h3 className="text-2xl font-black text-white neon-glow">Route Optimizer</h3>
-          <div className="flex gap-2">
-            <div className="flex items-center gap-2 px-4 py-2 bg-black rounded-xl border border-zinc-900">
-              <Truck size={16} className="text-sky-400" />
-              <span className="text-xs font-black text-white uppercase">14 Active Fleet</span>
-            </div>
-          </div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          <div className="space-y-4">
-            {['Mumbai - Pune Express', 'Thane - Nashik Hub', 'Nagpur South Node'].map((route, i) => (
-              <div key={i} className="p-6 bg-black rounded-3xl border border-zinc-900 flex items-center gap-6 hover:border-sky-500/50 transition-all cursor-pointer group">
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center text-sky-400 group-hover:bg-sky-500 group-hover:text-black transition-all">
-                  <Navigation size={24} />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {kpis.map((kpi, idx) => (
+            <motion.div 
+              key={idx}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="bg-white dark:bg-slate-950 p-7 rounded-[2.5rem] shadow-sm border border-zinc-200 dark:border-zinc-900 transition-all hover:shadow-xl hover:scale-[1.02] group"
+            >
+              <div className="flex justify-between items-start mb-5">
+                <div className="p-3.5 rounded-2xl bg-aqua-100 dark:bg-aqua-500/10 text-aqua-600 dark:text-aqua-400 group-hover:scale-110 transition-transform">
+                  {kpi.icon}
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-black text-white">{route}</p>
-                  <p className="text-[10px] text-zinc-500 font-bold uppercase">Estimated T-Arrival: 2h 15m</p>
-                </div>
-                <div className="text-right">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 ml-auto mb-1 animate-pulse"></div>
-                  <p className="text-[10px] font-black text-emerald-500 uppercase">On Time</p>
+                <div className={`flex items-center gap-1.5 text-xs font-black px-2 py-1 rounded-lg ${kpi.trend >= 0 ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10' : 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-500/10'}`}>
+                  {kpi.trend >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                  {Math.abs(kpi.trend)}%
                 </div>
               </div>
-            ))}
-          </div>
-          <div className="bg-black rounded-[2rem] border border-zinc-900 p-6 flex flex-col justify-center items-center text-center">
-             <MapIcon size={48} className="text-zinc-800 mb-4" />
-             <p className="text-sm font-black text-white">Interactive Fleet Tracking</p>
-             <p className="text-xs text-zinc-500 mt-2">Connecting to GPS Satellite Cluster...</p>
-             <button className="mt-8 px-8 py-3 bg-sky-500 text-black font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-sky-500/20">Open Live Map</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const ReportsView = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {[
-        { title: 'Q1 Logistics Audit', type: 'PDF', date: '2024-03-01' },
-        { title: 'Partner Reliability Index', type: 'XLSX', date: '2024-02-28' },
-        { title: 'SKU Demand Forecast', type: 'CSV', date: '2024-03-02' },
-        { title: 'Financial Settlement Sync', type: 'PDF', date: '2024-03-03' },
-      ].map((report, i) => (
-        <motion.div 
-          key={i}
-          whileHover={{ scale: 1.02 }}
-          className="bg-zinc-950 p-6 rounded-3xl border border-zinc-900 group hover:border-sky-500/30 transition-all"
-        >
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${
-            report.type === 'PDF' ? 'bg-rose-500/10 text-rose-500' : 
-            report.type === 'XLSX' ? 'bg-emerald-500/10 text-emerald-500' : 
-            'bg-sky-500/10 text-sky-500'
-          }`}>
-            {report.type === 'PDF' ? <FileText size={24} /> : report.type === 'XLSX' ? <FileSpreadsheet size={24} /> : <FileText size={24} />}
-          </div>
-          <h4 className="text-sm font-black text-white mb-1">{report.title}</h4>
-          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6">Generated: {report.date}</p>
-          <div className="flex gap-2">
-            <button className="flex-1 py-2 bg-black border border-zinc-900 rounded-xl text-[10px] font-black text-zinc-400 hover:text-white transition-all uppercase">View</button>
-            <button className="px-3 py-2 bg-sky-500 text-black rounded-xl hover:bg-sky-400 transition-all"><Download size={14} /></button>
-          </div>
-        </motion.div>
-      ))}
-    </div>
-  );
-
-  const dashboardContent = useMemo(() => (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {liveKpiData.map((kpi, idx) => (
-          <motion.div 
-            key={idx}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.1 }}
-            className="bg-zinc-950 p-6 rounded-[2rem] shadow-sm border border-zinc-900 transition-all hover:border-sky-500/50 group"
-          >
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-3 rounded-2xl bg-sky-500/10 text-sky-400 group-hover:bg-sky-500 group-hover:text-black transition-all">
-                {kpi.icon}
-              </div>
-              <div className={`flex items-center gap-1 text-xs font-bold ${kpi.trend >= 0 ? 'text-sky-400' : 'text-rose-500'}`}>
-                {kpi.trend >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                {Math.abs(kpi.trend)}%
-              </div>
-            </div>
-            <p className="text-sm font-medium text-zinc-500 mb-1">{kpi.label}</p>
-            <h3 className="text-2xl font-black text-white tracking-tight tabular-nums">{kpi.value}</h3>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-2 bg-zinc-950 p-6 md:p-8 rounded-[2rem] shadow-sm border border-zinc-900 min-h-[450px] w-full min-w-0" style={{ minWidth: 0 }}>
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xl font-black text-white neon-glow">Supply Velocity</h3>
-            <div className="flex items-center gap-2 p-1 bg-black rounded-xl border border-zinc-900">
-              <button className="px-4 py-2 text-[10px] font-black bg-sky-500 text-black shadow-lg rounded-lg">LIVE</button>
-              <button className="px-4 py-2 text-[10px] font-bold text-zinc-500">PAST</button>
-            </div>
-          </div>
-          <div className="h-[350px] w-full min-w-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={ORDER_TRENDS}>
-                <defs>
-                  <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00f2ff" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#00f2ff" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1a1a1a" />
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#4a4a4a', fontSize: 10}} dy={10} />
-                <YAxis hide />
-                <ChartTooltip 
-                  contentStyle={{ borderRadius: '16px', border: '1px solid #333', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.5)', backgroundColor: '#000', color: '#fff' }} 
-                />
-                <Area type="monotone" dataKey="orders" stroke="#00f2ff" strokeWidth={3} fillOpacity={1} fill="url(#colorOrders)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+              <p className="text-[11px] font-black text-zinc-500 uppercase tracking-widest mb-1.5">{kpi.label}</p>
+              <h3 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight tabular-nums">
+                {kpi.label.includes('Revenue') || kpi.label.includes('Payments') ? (
+                  `$${(idx === 1 ? revenueTick : parseFloat(kpi.value.replace('$', '').replace('K', '')) * 1000).toLocaleString()}`
+                ) : kpi.value}
+              </h3>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="bg-zinc-950 p-8 rounded-[2rem] shadow-sm border border-zinc-900 relative overflow-hidden flex flex-col justify-between min-h-[450px]">
-          <div className="relative z-10">
-            <h3 className="text-xl font-black text-white mb-6">Operations Hub</h3>
-            <div className="space-y-6">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          <div className="xl:col-span-2 bg-white dark:bg-slate-950 p-8 rounded-[3rem] shadow-sm border border-zinc-200 dark:border-zinc-900 min-h-[500px] w-full min-w-0">
+            <div className="flex items-center justify-between mb-10">
               <div>
-                <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-1">Total Production Volume</p>
-                <p className="text-4xl font-black text-sky-400 tabular-nums neon-glow">{productionTick.toLocaleString()} <span className="text-lg text-zinc-700">L</span></p>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-white dark:neon-glow uppercase tracking-tighter italic">NIKS Supply Dynamics</h3>
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Global Node Feed • QLOAX Analytics v1.2</p>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-black rounded-2xl border border-zinc-900">
-                <div className="w-10 h-10 bg-sky-500/10 text-sky-400 flex items-center justify-center rounded-xl border border-sky-500/20">
-                  <ShieldCheck size={20} />
-                </div>
+              <div className="flex items-center gap-2 p-1.5 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                <button className="px-5 py-2 text-[10px] font-black bg-white dark:bg-slate-800 text-zinc-900 dark:text-white shadow-md rounded-xl">ACTIVE CYCLE</button>
+                <button className="px-5 py-2 text-[10px] font-bold text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">MONTHLY AUDIT</button>
+              </div>
+            </div>
+            <div className="h-[350px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={ORDER_TRENDS}>
+                  <defs>
+                    <linearGradient id="colorAqua" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#06b6d4" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? "#1e293b" : "#f1f5f9"} />
+                  <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10, fontWeight: 700}} dy={15} />
+                  <YAxis hide />
+                  <ChartTooltip 
+                    cursor={{ stroke: '#06b6d4', strokeWidth: 2 }}
+                    contentStyle={{ borderRadius: '24px', border: '1px solid #e2e8f0', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.1)', backgroundColor: darkMode ? '#020617' : '#fff', color: darkMode ? '#fff' : '#000', padding: '16px' }} 
+                  />
+                  <Area type="monotone" dataKey="orders" stroke="#06b6d4" strokeWidth={4} fillOpacity={1} fill="url(#colorAqua)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-b from-slate-900 to-black p-8 rounded-[3rem] shadow-2xl border border-zinc-800 relative overflow-hidden flex flex-col justify-between group">
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 mb-8">
+                 <Zap className="text-blue-400 fill-blue-400 group-hover:scale-110 transition-transform" size={20} />
+                 <h3 className="text-lg font-black text-white uppercase tracking-tighter">NIKS Manufacturing Core</h3>
+              </div>
+              <div className="space-y-8">
                 <div>
-                  <p className="text-[10px] font-black text-zinc-400 uppercase">System Integrity</p>
-                  <p className="text-sm font-bold text-sky-300">99.98% SEALED</p>
+                  <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest mb-2">Cycle Reservoir (L)</p>
+                  <p className="text-5xl font-black text-blue-400 tabular-nums neon-glow tracking-tighter italic">{productionTick.toLocaleString()}</p>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-5 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                    <div className="w-12 h-12 bg-blue-500/10 text-blue-400 flex items-center justify-center rounded-2xl border border-blue-500/20">
+                      <ShieldCheck size={24} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Sterility Compliance</p>
+                      <p className="text-sm font-black text-white uppercase italic">99.99% SECURE</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-5 bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                    <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 flex items-center justify-center rounded-2xl border border-emerald-500/20">
+                      <Truck size={24} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Operational Fleet</p>
+                      <p className="text-sm font-black text-white uppercase italic">88% ENGAGED</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <Waves className="absolute -bottom-10 -right-10 w-48 h-48 text-sky-500/5 pointer-events-none" />
-          <div className="mt-8 pt-6 border-t border-zinc-900">
             <motion.button 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-4 bg-white text-black rounded-2xl font-black text-xs transition-all shadow-xl shadow-white/5"
+              className="mt-8 py-5 bg-blue-600 hover:bg-blue-500 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest transition-all shadow-2xl shadow-blue-500/30 italic"
             >
-              MAINTENANCE PROTOCOL
+              RUN OWNER DIAGNOSTIC
             </motion.button>
           </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-zinc-950 p-6 md:p-8 rounded-[2rem] shadow-sm border border-zinc-900 min-h-[400px] w-full min-w-0" style={{ minWidth: 0 }}>
-          <h3 className="text-lg font-black text-white mb-6 neon-glow">Market Density Heatmap</h3>
-          <MaharashtraMap />
-        </div>
-        <div className="bg-zinc-950 p-6 md:p-8 rounded-[2rem] shadow-sm border border-zinc-900 min-h-[400px] w-full min-w-0" style={{ minWidth: 0 }}>
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-black text-white">Live Node Requests</h3>
-            <span className="text-[10px] font-black text-sky-400 uppercase tracking-widest animate-pulse">Live Link Active</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-white dark:bg-slate-950 p-8 rounded-[3rem] shadow-sm border border-zinc-200 dark:border-zinc-900 min-h-[450px]">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-white uppercase tracking-tighter italic">Territory Demand Pulse</h3>
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Regional Heatmap • FMCG Velocity</p>
+              </div>
+            </div>
+            <MaharashtraMap />
           </div>
-          <div className="space-y-3 overflow-y-auto max-h-[350px] pr-2 custom-scrollbar">
-            {MOCK_ORDERS.map((order) => (
-              <motion.div 
-                key={order.id} 
-                whileHover={{ x: 5 }}
-                className="flex items-center justify-between p-4 bg-black rounded-2xl transition-colors border border-zinc-900 hover:border-sky-500/30"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center border border-zinc-800">
-                    <Truck size={20} className="text-sky-400" />
+          <div className="bg-white dark:bg-slate-950 p-8 rounded-[3rem] shadow-sm border border-zinc-200 dark:border-zinc-900 min-h-[450px]">
+            <div className="flex justify-between items-center mb-10">
+              <h3 className="text-xl font-black text-zinc-900 dark:text-white uppercase tracking-tighter">Live Fulfillment Stream</h3>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
+                <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest italic">Live Sink Active</span>
+              </div>
+            </div>
+            <div className="space-y-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
+              {MOCK_ORDERS.map((order) => (
+                <motion.div 
+                  key={order.id} 
+                  whileHover={{ x: 8 }}
+                  className="flex items-center justify-between p-5 bg-zinc-50 dark:bg-zinc-900/40 rounded-[2rem] transition-all border border-zinc-100 dark:border-zinc-800 hover:border-aqua-500/30 group"
+                >
+                  <div className="flex items-center gap-5">
+                    <div className="w-12 h-12 bg-white dark:bg-slate-950 rounded-2xl flex items-center justify-center border border-zinc-100 dark:border-zinc-800 shadow-sm group-hover:bg-blue-600 group-hover:text-white transition-all">
+                      <Truck size={24} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-zinc-900 dark:text-zinc-100 truncate w-32 md:w-56 uppercase">{order.partner}</p>
+                      <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-0.5">#{order.id} • {order.region}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-black text-zinc-100 truncate w-32 md:w-48">{order.partner}</p>
-                    <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">#{order.id}</p>
+                  <div className="text-right">
+                    <p className="text-sm font-black text-zinc-900 dark:text-white mb-2 tabular-nums">${order.amount.toLocaleString()}</p>
+                    <StatusBadge status={order.status} />
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-black text-white">${order.amount.toLocaleString()}</p>
-                  <StatusBadge status={order.status} />
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
+        
+        {/* Developer Footer Attribution */}
+        <footer className="pt-12 pb-6 border-t border-zinc-200 dark:border-zinc-900 flex flex-col md:flex-row items-center justify-between gap-6">
+           <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-white/5 flex items-center justify-center border border-zinc-200 dark:border-white/5">
+                <Shield size={20} className="text-zinc-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">System Authentication</p>
+                <p className="text-xs font-black text-zinc-900 dark:text-white uppercase italic">NIKS-AQUA SCM v1.2.0 • OWNER ACCESS</p>
+              </div>
+           </div>
+           <div className="text-center md:text-right">
+              <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Architecture & Engineering by</p>
+              <div className="flex items-center justify-center md:justify-end gap-2 group cursor-help">
+                 <span className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-tighter group-hover:text-aqua-500 transition-colors">QLOAX Infotech</span>
+                 <div className="w-1.5 h-1.5 rounded-full bg-aqua-500 shadow-[0_0_8px_#06b6d4]"></div>
+              </div>
+           </div>
+        </footer>
       </div>
-    </div>
-  ), [liveKpiData, productionTick]);
-
-  const AnalyticsView = () => (
-    <div className="space-y-8">
-      <div className="bg-zinc-950 rounded-[2.5rem] border border-zinc-900 p-8 shadow-sm">
-        <h3 className="text-2xl font-black text-white mb-8 neon-glow">Predictive Growth</h3>
-        <div className="h-[400px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={ORDER_TRENDS}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1a1a1a" />
-              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fill: '#4a4a4a', fontSize: 10}} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: '#4a4a4a', fontSize: 10}} />
-              <ChartTooltip cursor={{fill: '#1a1a1a'}} contentStyle={{ backgroundColor: '#000', border: '1px solid #333' }} />
-              <Bar dataKey="revenue" fill="#00f2ff" radius={[4, 4, 0, 0]} barSize={32} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
-  );
+    );
+  }, [role, productionTick, revenueTick, darkMode]);
 
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard': return dashboardContent;
       case 'orders': return <OrdersView />;
       case 'inventory': return <InventoryView />;
-      case 'payments': return <PaymentsView />;
-      case 'partners': return <PartnersView />;
-      case 'logistics': return <LogisticsView />;
-      case 'analytics': return <AnalyticsView />;
-      case 'reports': return <ReportsView />;
-      default: return (
-        <div className="h-[60vh] flex flex-col items-center justify-center text-center">
-          <Activity size={60} className="text-sky-500 mb-6 animate-pulse neon-glow" />
-          <h2 className="text-3xl font-black text-white">Module Initializing</h2>
-          <p className="text-zinc-500 mt-2 uppercase tracking-widest text-[10px] font-black">Connecting to regional node cluster...</p>
-        </div>
-      );
+      case 'payments': return <div className="p-20 text-center text-zinc-500 font-black uppercase tracking-widest italic animate-pulse">Financial Settlements Hub Syncing...</div>;
+      case 'partners': return <div className="p-20 text-center text-zinc-500 font-black uppercase tracking-widest italic animate-pulse">Network Entity Cluster Loading...</div>;
+      case 'logistics': return <div className="p-20 text-center text-zinc-500 font-black uppercase tracking-widest italic animate-pulse">Fleet Synchronization Active...</div>;
+      case 'analytics': return <div className="p-20 text-center text-zinc-500 font-black uppercase tracking-widest italic animate-pulse">Predictive Engine Calculating...</div>;
+      case 'reports': return <div className="p-20 text-center text-zinc-500 font-black uppercase tracking-widest italic animate-pulse">Ledger Archives Syncing...</div>;
+      default: return dashboardContent;
     }
   };
 
   return (
-    <div className="min-h-screen transition-colors duration-500 bg-black text-white dark">
+    <div className={`min-h-screen transition-all duration-500 ${darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-zinc-900'}`}>
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <motion.div 
-        animate={{ marginLeft: collapsed ? 80 : 256 }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
+        animate={{ marginLeft: collapsed ? 88 : 280 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="min-h-screen flex flex-col"
       >
         <Header 
           darkMode={darkMode} 
-          toggleDarkMode={() => {}} 
+          toggleDarkMode={() => setDarkMode(!darkMode)} 
           role={role} 
           setRole={setRole} 
           onOpenAlerts={() => setIsAlertOpen(true)} 
         />
         
-        <main className="p-4 md:p-8 pb-32 max-w-[1700px] mx-auto w-full flex-1 min-w-0">
+        <main className="p-6 md:p-10 pb-32 max-w-[1800px] mx-auto w-full flex-1 min-w-0">
           <motion.div 
-            initial={{ opacity: 0, x: -20 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-6"
+            className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 md:mb-14 gap-8"
           >
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 rounded-full bg-sky-500 animate-pulse shadow-[0_0_8px_#00f2ff]"></div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-sky-400">Node Cluster: Maharashtra North</span>
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse shadow-[0_0_12px_#3b82f6]"></div>
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-blue-600 dark:text-blue-400">Owner Cluster: NIKS-AQUA HQ</span>
               </div>
-              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter leading-none mb-3">
-                Command <span className="text-sky-400 neon-glow">Terminal</span>
+              <h1 className="text-4xl md:text-6xl font-black text-zinc-900 dark:text-white tracking-tighter leading-none mb-4 uppercase italic">
+                {activeTab === 'dashboard' ? 'Command' : activeTab.toUpperCase()} <span className="text-blue-500 dark:neon-glow">{activeTab === 'dashboard' ? 'CENTER' : 'HUB'}</span>
               </h1>
-              <p className="text-zinc-500 font-bold flex items-center gap-2 text-sm">
-                <Calendar size={16} className="text-zinc-700" /> Active Sync • Nodes: 42
+              <p className="text-zinc-500 dark:text-zinc-500 font-bold flex items-center gap-2 text-sm uppercase italic">
+                <Calendar size={18} className="text-blue-500" /> System Active • {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
               </p>
             </div>
             
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-8">
               <div className="text-right hidden sm:block">
-                <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-widest leading-none mb-2">System State</p>
+                <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-3 italic">NIKS Encryption Level: 4</p>
                 <div className="flex items-center gap-3 justify-end">
-                   <div className="px-3 py-1 bg-sky-500/10 text-sky-400 text-[10px] font-black rounded-lg border border-sky-500/20">Uptime: 99.9%</div>
-                   <button className="p-3 bg-zinc-950 rounded-2xl shadow-sm border border-zinc-900 text-sky-400 hover:rotate-180 transition-all duration-500">
-                    <RefreshCcw size={20} />
+                   <div className="px-4 py-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-black rounded-xl border border-emerald-500/20 uppercase">Core Uptime: 99.9%</div>
+                   <button className="p-3.5 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-zinc-200 dark:border-zinc-800 text-blue-500 hover:rotate-180 transition-all duration-700">
+                    <RefreshCcw size={22} />
                   </button>
                 </div>
               </div>
@@ -571,11 +456,11 @@ const App: React.FC = () => {
 
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
+              key={`${activeTab}-${role}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="w-full min-w-0"
             >
               {renderContent()}
