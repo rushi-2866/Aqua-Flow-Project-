@@ -9,7 +9,8 @@ import {
   RefreshCcw, Clock, Activity, Waves, Zap, ShieldCheck,
   UserCheck, CreditCard, Truck, Search,
   MapPin, Navigation, Award, Calendar, AlertTriangle,
-  FileText, Download, Eye, CheckCircle, FileSpreadsheet
+  FileText, Download, Eye, CheckCircle, FileSpreadsheet,
+  Users, Wallet, Map as MapIcon, ChevronRight, Star
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -65,6 +66,7 @@ const App: React.FC = () => {
       'Approved': 'bg-blue-500/10 text-blue-400 border border-blue-500/30',
       'Dispatched': 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30',
       'Active': 'bg-sky-400/10 text-sky-300 border border-sky-400/30',
+      'Partially Paid': 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30',
     };
     return (
       <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded shadow-sm whitespace-nowrap ${styles[status] || 'bg-zinc-800 text-zinc-400 border border-zinc-700'}`}>
@@ -185,6 +187,171 @@ const App: React.FC = () => {
           ))}
         </div>
       </div>
+    </div>
+  );
+
+  const PaymentsView = () => (
+    <div className="bg-zinc-950 rounded-[2.5rem] border border-zinc-900 p-8 shadow-2xl">
+      <div className="flex justify-between items-center mb-10">
+        <div>
+          <h3 className="text-2xl font-black text-white neon-glow">Financial Ledger</h3>
+          <p className="text-sm text-zinc-500 font-medium">B2B Settlements & Credit Tracking</p>
+        </div>
+        <div className="flex gap-4">
+          <div className="px-6 py-3 bg-black border border-zinc-900 rounded-2xl">
+            <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Total Receivables</p>
+            <p className="text-xl font-black text-emerald-400">$142,800</p>
+          </div>
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="text-left border-b border-zinc-900">
+              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Invoice</th>
+              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Partner</th>
+              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Amount</th>
+              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Due Date</th>
+              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Status</th>
+              <th className="pb-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-900">
+            {MOCK_PAYMENTS.map((payment) => (
+              <tr key={payment.id} className="group hover:bg-zinc-900/50 transition-colors">
+                <td className="py-5 text-sm font-bold text-zinc-400">#{payment.id}</td>
+                <td className="py-5 font-black text-zinc-200">{payment.partner}</td>
+                <td className="py-5 font-black text-white">${payment.amount.toLocaleString()}</td>
+                <td className="py-5 text-sm text-zinc-500 font-bold">{payment.due}</td>
+                <td className="py-5"><StatusBadge status={payment.status} /></td>
+                <td className="py-5">
+                  <button className="p-2 bg-zinc-900 rounded-lg text-sky-400 hover:bg-sky-500 hover:text-black transition-all">
+                    <Download size={14} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+
+  const PartnersView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {MOCK_PARTNERS.map((partner) => (
+        <motion.div 
+          key={partner.id}
+          whileHover={{ y: -5 }}
+          className="bg-zinc-950 p-8 rounded-[2.5rem] border border-zinc-900 shadow-sm relative group overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/5 blur-3xl -mr-10 -mt-10 group-hover:bg-sky-500/10 transition-all"></div>
+          <div className="flex justify-between items-start mb-6">
+            <div className="w-14 h-14 bg-sky-500 rounded-2xl flex items-center justify-center text-black shadow-lg">
+              <Users size={28} />
+            </div>
+            <div className="flex items-center gap-1 bg-black px-3 py-1 rounded-full border border-zinc-900">
+              <Star size={12} className="text-amber-400 fill-amber-400" />
+              <span className="text-xs font-black text-white">{partner.rating}</span>
+            </div>
+          </div>
+          <h3 className="text-xl font-black text-white mb-1">{partner.name}</h3>
+          <p className="text-[10px] font-black text-sky-400 uppercase tracking-widest mb-6">{partner.type} • {partner.region}</p>
+          
+          <div className="space-y-4 mb-8">
+            <div>
+              <div className="flex justify-between text-[10px] font-black uppercase text-zinc-500 mb-1">
+                <span>Reliability</span>
+                <span className="text-zinc-300">{partner.reliability}%</span>
+              </div>
+              <div className="w-full h-1.5 bg-zinc-900 rounded-full">
+                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${partner.reliability}%` }}></div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-6 border-t border-zinc-900">
+             {partner.badge && (
+               <span className="text-[9px] font-black uppercase bg-sky-500/10 text-sky-400 px-3 py-1 rounded-full border border-sky-500/20">{partner.badge}</span>
+             )}
+             <button className="text-[10px] font-black uppercase text-zinc-400 hover:text-white flex items-center gap-1 ml-auto">
+               Profile <ChevronRight size={12} />
+             </button>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+
+  const LogisticsView = () => (
+    <div className="space-y-8">
+      <div className="bg-zinc-950 rounded-[2.5rem] border border-zinc-900 p-8 shadow-sm">
+        <div className="flex justify-between items-center mb-10">
+          <h3 className="text-2xl font-black text-white neon-glow">Route Optimizer</h3>
+          <div className="flex gap-2">
+            <div className="flex items-center gap-2 px-4 py-2 bg-black rounded-xl border border-zinc-900">
+              <Truck size={16} className="text-sky-400" />
+              <span className="text-xs font-black text-white uppercase">14 Active Fleet</span>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            {['Mumbai - Pune Express', 'Thane - Nashik Hub', 'Nagpur South Node'].map((route, i) => (
+              <div key={i} className="p-6 bg-black rounded-3xl border border-zinc-900 flex items-center gap-6 hover:border-sky-500/50 transition-all cursor-pointer group">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-900 flex items-center justify-center text-sky-400 group-hover:bg-sky-500 group-hover:text-black transition-all">
+                  <Navigation size={24} />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-black text-white">{route}</p>
+                  <p className="text-[10px] text-zinc-500 font-bold uppercase">Estimated T-Arrival: 2h 15m</p>
+                </div>
+                <div className="text-right">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 ml-auto mb-1 animate-pulse"></div>
+                  <p className="text-[10px] font-black text-emerald-500 uppercase">On Time</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-black rounded-[2rem] border border-zinc-900 p-6 flex flex-col justify-center items-center text-center">
+             <MapIcon size={48} className="text-zinc-800 mb-4" />
+             <p className="text-sm font-black text-white">Interactive Fleet Tracking</p>
+             <p className="text-xs text-zinc-500 mt-2">Connecting to GPS Satellite Cluster...</p>
+             <button className="mt-8 px-8 py-3 bg-sky-500 text-black font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-sky-500/20">Open Live Map</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const ReportsView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[
+        { title: 'Q1 Logistics Audit', type: 'PDF', date: '2024-03-01' },
+        { title: 'Partner Reliability Index', type: 'XLSX', date: '2024-02-28' },
+        { title: 'SKU Demand Forecast', type: 'CSV', date: '2024-03-02' },
+        { title: 'Financial Settlement Sync', type: 'PDF', date: '2024-03-03' },
+      ].map((report, i) => (
+        <motion.div 
+          key={i}
+          whileHover={{ scale: 1.02 }}
+          className="bg-zinc-950 p-6 rounded-3xl border border-zinc-900 group hover:border-sky-500/30 transition-all"
+        >
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${
+            report.type === 'PDF' ? 'bg-rose-500/10 text-rose-500' : 
+            report.type === 'XLSX' ? 'bg-emerald-500/10 text-emerald-500' : 
+            'bg-sky-500/10 text-sky-500'
+          }`}>
+            {report.type === 'PDF' ? <FileText size={24} /> : report.type === 'XLSX' ? <FileSpreadsheet size={24} /> : <FileText size={24} />}
+          </div>
+          <h4 className="text-sm font-black text-white mb-1">{report.title}</h4>
+          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6">Generated: {report.date}</p>
+          <div className="flex gap-2">
+            <button className="flex-1 py-2 bg-black border border-zinc-900 rounded-xl text-[10px] font-black text-zinc-400 hover:text-white transition-all uppercase">View</button>
+            <button className="px-3 py-2 bg-sky-500 text-black rounded-xl hover:bg-sky-400 transition-all"><Download size={14} /></button>
+          </div>
+        </motion.div>
+      ))}
     </div>
   );
 
@@ -338,7 +505,11 @@ const App: React.FC = () => {
       case 'dashboard': return dashboardContent;
       case 'orders': return <OrdersView />;
       case 'inventory': return <InventoryView />;
+      case 'payments': return <PaymentsView />;
+      case 'partners': return <PartnersView />;
+      case 'logistics': return <LogisticsView />;
       case 'analytics': return <AnalyticsView />;
+      case 'reports': return <ReportsView />;
       default: return (
         <div className="h-[60vh] flex flex-col items-center justify-center text-center">
           <Activity size={60} className="text-sky-500 mb-6 animate-pulse neon-glow" />
