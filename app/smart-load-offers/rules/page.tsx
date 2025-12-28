@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ShieldCheck, Plus, Trash2, Save, Info } from 'lucide-react';
 import { useSmartLoadStore } from '../../../store/smartLoadStore';
@@ -84,9 +83,25 @@ export const OfferRulesPage: React.FC = () => {
         <div>
           <h4 className="text-sm font-black text-blue-900 dark:text-blue-100 uppercase tracking-widest">Business Intelligence Note</h4>
           <p className="text-xs font-bold text-blue-800/60 dark:text-blue-200/60 mt-2 leading-relaxed">
-            These rules are applied instantly when the system scans a route. High discount percentages (30%+) are recommended for routes with >40% wasted capacity to recover logistics overheads quickly.
+            These rules are applied instantly when the system scans a route. High discount percentages (30%+) are recommended for routes with &gt;40% wasted capacity to recover logistics overheads quickly.
           </p>
         </div>
+      </div>
+
+      <div className="p-8 bg-slate-900 dark:bg-slate-950 rounded-[3rem] border border-slate-800 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+         <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-primary-600/20 text-primary-400 rounded-3xl flex items-center justify-center border border-primary-500/20">
+               <ShieldCheck size={32} />
+            </div>
+            <div>
+               <h4 className="text-lg font-black uppercase tracking-tighter italic">Global Load Threshold</h4>
+               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">Offers are only triggered when wasted space &gt; 800L</p>
+            </div>
+         </div>
+         <div className="flex items-center gap-4">
+            <input type="range" className="w-48 accent-primary-500" defaultValue={800} min={500} max={2000} />
+            <span className="text-2xl font-black italic tabular-nums">800L</span>
+         </div>
       </div>
       
       <footer className="pt-10 border-t border-slate-100 dark:border-slate-900 text-center">
